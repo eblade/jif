@@ -14,6 +14,7 @@ int main(void) {
     SDL_Window *window = NULL;
 
     unsigned int loop = 0;
+    bool run = true;
 
     SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(
@@ -25,12 +26,14 @@ int main(void) {
     texture = IMG_LoadTexture(renderer, "c64.png");
     View view = View(renderer, texture);
     Buffer buffer = Buffer();
-    buffer.Append(Line("hej"));
-    buffer.Append(Line("rad 2 hejsan"));
+    buffer.Append(Line(""));
+    Line* currentLine = buffer.GetLine(0);
+    SDL_SetRenderDrawColor(renderer, 66, 52, 161, 255);
 
-    while (1) {
+    while (run) {
         if (loop == 0) {
-            for (unsigned int i = 0; i < 2; i++) {
+            SDL_RenderClear(renderer);
+            for (unsigned int i = 0; i < 1; i++) {
                 view.setPosition(0, i);
                 Line* line = buffer.GetLine(i);
                 view.printString(line->GetContent().c_str());
@@ -38,8 +41,26 @@ int main(void) {
             SDL_RenderPresent(renderer);
         }
         ++loop %= 50;
-        if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
-            break;
+
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    run = false;
+                    break;
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_BACKSPACE:
+                            currentLine->DeleteBefore();
+                            break;
+                    }
+                    loop = 0;
+                    break;
+                case SDL_TEXTINPUT:
+                    currentLine->PutLast(event.text.text);
+                    loop = 0;
+                    break;
+            }
+        }
         SDL_Delay(10);
     }
 

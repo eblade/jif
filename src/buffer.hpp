@@ -11,6 +11,9 @@ namespace JIF {
         public:
             Line(std::string content);
             std::string GetContent();
+            void PutLast(const char c);
+            void PutLast(const char * c);
+            void DeleteBefore();
         private:
             std::string content;
             LineBreak lb;
@@ -23,6 +26,21 @@ namespace JIF {
 
     std::string Line::GetContent() {
         return content;
+    }
+
+    void Line::PutLast(const char c) {
+        content.append(1u, c);
+    }
+
+    void Line::PutLast(const char * c) {
+        content.append(c);
+    }
+
+    void Line::DeleteBefore() {
+        if (content.size() == 0) {
+            return;
+        }
+        content.erase(content.end()-1, content.end());
     }
 
     class Buffer {
