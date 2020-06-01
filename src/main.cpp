@@ -23,12 +23,13 @@ int main(void) {
     );
     SDL_SetWindowTitle(window, "JIF");
     IMG_Init(IMG_INIT_PNG);
-    texture = IMG_LoadTexture(renderer, "c64.png");
+    texture = IMG_LoadTexture(renderer, "c64bw.png");
     View view = View(renderer, texture);
     Buffer buffer = Buffer();
     buffer.Append(Line(""));
     Line* currentLine = buffer.GetLine(0);
-    SDL_SetRenderDrawColor(renderer, 66, 52, 161, 255);
+    //SDL_SetRenderDrawColor(renderer, 66, 52, 161, 255);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     while (run) {
         if (loop == 0) {
@@ -36,7 +37,8 @@ int main(void) {
             for (unsigned int i = 0; i < 1; i++) {
                 view.setPosition(0, i);
                 Line* line = buffer.GetLine(i);
-                view.printString(line->GetContent().c_str());
+                view.printString(line->GetContent().c_str(),
+                        buffer.ActiveLine == i ? line->Position : -1);
             }
             SDL_RenderPresent(renderer);
         }
@@ -52,11 +54,17 @@ int main(void) {
                         case SDLK_BACKSPACE:
                             currentLine->DeleteBefore();
                             break;
+                        case SDLK_LEFT:
+                            currentLine->GoLeft();
+                            break;
+                        case SDLK_RIGHT:
+                            currentLine->GoRight();
+                            break;
                     }
                     loop = 0;
                     break;
                 case SDL_TEXTINPUT:
-                    currentLine->PutLast(event.text.text);
+                    currentLine->PutAfter(event.text.text);
                     loop = 0;
                     break;
             }

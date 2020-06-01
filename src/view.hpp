@@ -14,9 +14,9 @@ namespace JIF {
         public:
             View(SDL_Renderer* renderer, SDL_Texture* texture);
             void setPosition(const unsigned int x, const unsigned int y);
-            void printString(const char* str);
+            void printString(const char* str, int16_t cursor);
         private:
-            void chooseType(const char c);
+            void chooseType(const char c, bool invert);
             SDL_Renderer* renderer;
             SDL_Texture* texture;
             SDL_Rect source = {0, 0, SOURCE_WIDTH, SOURCE_HEIGHT};
@@ -33,7 +33,7 @@ namespace JIF {
         destination.y = y * DESTINATION_HEIGHT;
     }
 
-    void View::chooseType(const char c) {
+    void View::chooseType(const char c, bool invert) {
         char x = 0, y = 0;
         switch (c) {
             //'Â£': Character({ image: CharacterMap, x: 12, y: 1 }),
@@ -133,15 +133,34 @@ namespace JIF {
         };
         source.x = x << 4;
         source.y = y << 4;
+        if (invert) {
+            source.y += 128;
+        }
     }
 
-    void View::printString(const char* str) {
-        unsigned int len = strlen(str);
+    void View::printString(const char* str, int16_t cursor) {
+        uint16_t len = strlen(str);
+        bool ext = false;
+        if (cursor >= len) {
+            len += 1;
+            ext = true;
+        }
         char c;
-        unsigned int i;
+        int16_t i;
         for (i = 0; i < len; i++) {
             c = str[i];
-            chooseType(c);
+            if (cursor == i) {
+                if (ext) {
+                    chooseType(' ', true);
+                } else {
+                    chooseType(c, true);
+                }
+
+                SDL_SetTextureColorMod(texture, 255, 0, 0);
+            } else {
+                chooseType(c, false);
+                SDL_SetTextureColorMod(texture, 255, 255, 255);
+            }
             SDL_RenderCopy(renderer, texture, &source, &destination);
             destination.x += DESTINATION_WIDTH;
         }
