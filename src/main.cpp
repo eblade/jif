@@ -28,6 +28,7 @@ int main(void) {
     Buffer buffer = Buffer();
     buffer.Append(Line(""));
     Line* currentLine = buffer.GetLine(0);
+    SDL_EnableScreenSaver();
     //SDL_SetRenderDrawColor(renderer, 66, 52, 161, 255);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
