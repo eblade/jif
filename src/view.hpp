@@ -6,8 +6,8 @@
 
 #define SOURCE_WIDTH 16
 #define SOURCE_HEIGHT 16
-#define DESTINATION_WIDTH 32
-#define DESTINATION_HEIGHT 32
+#define DESTINATION_WIDTH 16
+#define DESTINATION_HEIGHT 24
 
 namespace JIF {
     class View {
