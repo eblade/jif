@@ -35,7 +35,7 @@ int main(void) {
     while (run) {
         if (loop == 0) {
             SDL_RenderClear(renderer);
-            for (unsigned int i = 0; i < 1; i++) {
+            for (unsigned int i = 0; i < buffer.GetSize(); i++) {
                 view.setPosition(0, i);
                 Line* line = buffer.GetLine(i);
                 view.printString(line->GetContent().c_str(),
@@ -60,6 +60,15 @@ int main(void) {
                             break;
                         case SDLK_RIGHT:
                             currentLine->GoRight();
+                            break;
+                        case SDLK_UP:
+                            buffer.GoUp();
+                            break;
+                        case SDLK_DOWN:
+                            buffer.GoDown();
+                            break;
+                        case SDLK_RETURN:
+                            buffer.Append(Line(""));
                             break;
                     }
                     loop = 0;

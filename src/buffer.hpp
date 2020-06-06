@@ -19,7 +19,7 @@ namespace JIF {
             void GoLast();
             void GoLeft();
             void GoRight();
-            uint16_t Position = 0;
+            uint16_t Position;
         private:
             std::string content;
             LineBreak lb;
@@ -28,6 +28,7 @@ namespace JIF {
     Line::Line(std::string content) {
         this->content = content;
         this->lb = None;
+        this->Position = 0;
     }
 
     std::string Line::GetContent() {
@@ -85,6 +86,10 @@ namespace JIF {
             Buffer();
             void Append(Line line);
             Line* GetLine(unsigned int n);
+            size_t GetSize();
+            void GoUp();
+            void GoDown();
+
             uint32_t ActiveLine = 0;
         private:
             std::vector<Line> lines;
@@ -100,6 +105,26 @@ namespace JIF {
 
     Line* Buffer::GetLine(unsigned int n) {
         return &(lines[n]);
+    }
+
+    size_t Buffer::GetSize() {
+        return lines.size();
+    }
+
+    void Buffer::GoUp() {
+        if (ActiveLine == 0) {
+            return;
+        }
+
+        ActiveLine--;
+    }
+
+    void Buffer::GoDown() {
+        if (ActiveLine >= lines.size() - 1) {
+            return;
+        }
+
+        ActiveLine++;
     }
 }
 
