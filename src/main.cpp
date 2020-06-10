@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <memory>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -26,13 +27,13 @@ int main(void) {
     texture = IMG_LoadTexture(renderer, "c64aw.png");
     View view = View(renderer, texture);
     Buffer buffer = Buffer();
-    buffer.Append(Line(""));
-    Line* currentLine = buffer.GetLine(0);
+    buffer.Append();
+    buffer.ActiveLine = 0;
     SDL_EnableScreenSaver();
-    //SDL_SetRenderDrawColor(renderer, 66, 52, 161, 255);
     SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 
     while (run) {
+        Line* currentLine = buffer.GetLine(buffer.ActiveLine);
         if (loop == 0) {
             SDL_RenderClear(renderer);
             for (unsigned int i = 0; i < buffer.GetSize(); i++) {
@@ -68,7 +69,8 @@ int main(void) {
                             buffer.GoDown();
                             break;
                         case SDLK_RETURN:
-                            buffer.Append(Line(""));
+                            auto line = std::make_unique<Line>("");
+                            buffer.Append(std::move(line));
                             break;
                     }
                     loop = 0;

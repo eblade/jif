@@ -3,9 +3,11 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace JIF {
     enum LineBreak {None, Windows, Linux, Mac};
+    using index_t = uint32_t;
 
     class Line {
         public:
@@ -19,7 +21,7 @@ namespace JIF {
             void GoLast();
             void GoLeft();
             void GoRight();
-            uint16_t Position;
+            index_t Position;
         private:
             std::string content;
             LineBreak lb;
@@ -84,30 +86,37 @@ namespace JIF {
     class Buffer {
         public:
             Buffer();
-            void Append(Line line);
-            Line* GetLine(unsigned int n);
-            size_t GetSize();
+            void Append();
+            void Append(std::unique_ptr<Line> line);
+            Line* GetLine(index_t n);
+            index_t GetSize();
             void GoUp();
             void GoDown();
 
-            uint32_t ActiveLine = 0;
+            index_t ActiveLine = 0;
         private:
-            std::vector<Line> lines;
+            std::vector<std::unique_ptr<Line>> lines;
     };
 
     Buffer::Buffer() {
     }
 
-    void Buffer::Append(Line line) {
-        lines.push_back(line);
+    void Buffer::Append() {
+        auto line = std::make_unique<Line>("");
+        lines.push_back(std::move(line));
+        ActiveLine = lines.size() - 1;
+    }
+
+    void Buffer::Append(std::unique_ptr<Line> line) {
+        lines.push_back(std::move(line));
         ActiveLine = lines.size() - 1;
     }
 
     Line* Buffer::GetLine(unsigned int n) {
-        return &(lines[n]);
+        return lines[n].get();
     }
 
-    size_t Buffer::GetSize() {
+    index_t Buffer::GetSize() {
         return lines.size();
     }
 
