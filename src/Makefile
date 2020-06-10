@@ -1,2 +1,2 @@
 build:
-	g++ -o main -Wall -Wextra -pedantic main.cpp -lSDL2 -lSDL2_image
+	clang++ -o main -Wall -Wextra -pedantic -ggdb3 -std=c++17 -fsanitize=address main.cpp -lSDL2 -lSDL2_image
