@@ -69,8 +69,7 @@ int main(void) {
                             buffer.GoDown();
                             break;
                         case SDLK_RETURN:
-                            auto line = std::make_unique<Line>("");
-                            buffer.Append(std::move(line));
+                            buffer.Append();
                             break;
                     }
                     loop = 0;
