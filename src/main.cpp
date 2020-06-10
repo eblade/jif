@@ -23,14 +23,14 @@ int main(void) {
     );
     SDL_SetWindowTitle(window, "JIF");
     IMG_Init(IMG_INIT_PNG);
-    texture = IMG_LoadTexture(renderer, "c64bw.png");
+    texture = IMG_LoadTexture(renderer, "c64aw.png");
     View view = View(renderer, texture);
     Buffer buffer = Buffer();
     buffer.Append(Line(""));
     Line* currentLine = buffer.GetLine(0);
     SDL_EnableScreenSaver();
     //SDL_SetRenderDrawColor(renderer, 66, 52, 161, 255);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 
     while (run) {
         if (loop == 0) {
